@@ -1,17 +1,27 @@
-import i18next from 'i18next'
 import { subscribe } from 'valtio/vanilla'
 
-const renderStaticTexts = (elements) => {
-  elements.title.textContent = i18next.t('ui.title')
-  elements.subtitle.textContent = i18next.t('ui.subtitle')
-  elements.label.textContent = i18next.t('ui.label')
-  elements.input.placeholder = i18next.t('ui.placeholder')
-  elements.input.setAttribute('aria-label', i18next.t('ui.label'))
-  elements.submit.textContent = i18next.t('ui.submit')
-  elements.example.textContent = i18next.t('ui.example')
+const createCard = (title, bodyHtml) => `
+  <div class="card border-0">
+    <div class="card-body">
+      <h2 class="card-title h4">${title}</h2>
+    </div>
+    <ul class="list-group border-0 rounded-0">
+      ${bodyHtml}
+    </ul>
+  </div>
+`
+
+const renderStaticTexts = (elements, i18n) => {
+  elements.title.textContent = i18n.t('ui.title')
+  elements.subtitle.textContent = i18n.t('ui.subtitle')
+  elements.label.textContent = i18n.t('ui.label')
+  elements.input.placeholder = i18n.t('ui.placeholder')
+  elements.input.setAttribute('aria-label', i18n.t('ui.label'))
+  elements.submit.textContent = i18n.t('ui.submit')
+  elements.example.textContent = i18n.t('ui.example')
 }
 
-const renderFormState = (state, elements) => {
+const renderForm = (state, elements, i18n) => {
   const { form } = state
 
   elements.input.classList.remove('is-invalid', 'is-valid')
@@ -21,13 +31,13 @@ const renderFormState = (state, elements) => {
   if (form.status === 'failed') {
     elements.input.classList.add('is-invalid')
     elements.feedback.classList.add('text-danger')
-    elements.feedback.textContent = i18next.t(form.error)
+    elements.feedback.textContent = i18n.t(form.error)
   }
 
   if (form.status === 'success') {
     elements.input.classList.add('is-valid')
     elements.feedback.classList.add('text-success')
-    elements.feedback.textContent = i18next.t('ui.success')
+    elements.feedback.textContent = i18n.t('ui.success')
   }
 
   if (form.status === 'sending') {
@@ -38,12 +48,56 @@ const renderFormState = (state, elements) => {
   }
 }
 
-const initView = (state, elements) => {
-  renderStaticTexts(elements)
-  renderFormState(state, elements)
+const renderFeeds = (state, elements, i18n) => {
+  const { feeds } = state
+
+  if (feeds.length === 0) {
+    elements.feeds.innerHTML = ''
+    return
+  }
+
+  const items = feeds.map(feed => `
+    <li class="list-group-item border-0 border-end-0">
+      <h3 class="h6 m-0">${feed.title}</h3>
+      <p class="m-0 small text-black-50">${feed.description}</p>
+    </li>
+  `).join('')
+
+  elements.feeds.innerHTML = createCard(i18n.t('ui.feeds'), items)
+}
+
+const renderPosts = (state, elements, i18n) => {
+  if (state.posts.length === 0) {
+    elements.posts.innerHTML = ''
+    return
+  }
+
+  const items = state.posts.map(post => `
+    <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
+      <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="fw-bold">
+        ${post.title}
+      </a>
+      <button type="button" class="btn btn-outline-primary btn-sm" disabled>
+        ${i18n.t('ui.preview')}
+      </button>
+    </li>
+  `).join('')
+
+  elements.posts.innerHTML = createCard(i18n.t('ui.posts'), items)
+}
+
+const render = (state, elements, i18n) => {
+  renderStaticTexts(elements, i18n)
+  renderForm(state, elements, i18n)
+  renderFeeds(state, elements, i18n)
+  renderPosts(state, elements, i18n)
+}
+
+const initView = (state, elements, i18n) => {
+  render(state, elements, i18n)
 
   subscribe(state, () => {
-    renderFormState(state, elements)
+    render(state, elements, i18n)
   })
 }
 
