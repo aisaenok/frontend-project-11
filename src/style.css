@@ -1,0 +1,10 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+body {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+#app {
+  min-height: 100vh;
+}
