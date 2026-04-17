@@ -4,8 +4,12 @@ import initView from './view.js'
 
 const getElements = () => ({
   form: document.querySelector('.rss-form'),
+  title: document.querySelector('.page-title'),
+  subtitle: document.querySelector('.page-subtitle'),
+  label: document.querySelector('label[for="url-input"]'),
   input: document.querySelector('#url-input'),
   submit: document.querySelector('button[type="submit"]'),
+  example: document.querySelector('.form-text'),
   feedback: document.querySelector('.feedback'),
 })
 
@@ -13,7 +17,6 @@ const handleSuccess = (elements, url) => {
   state.feeds.push({ url })
   state.form.status = 'success'
   state.form.error = null
-  state.form.valid = true
 
   elements.form.reset()
   elements.input.focus()
@@ -22,7 +25,6 @@ const handleSuccess = (elements, url) => {
 const handleError = (error) => {
   state.form.status = 'failed'
   state.form.error = error.message
-  state.form.valid = false
 }
 
 const handleSubmit = elements => (event) => {
