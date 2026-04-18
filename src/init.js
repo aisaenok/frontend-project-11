@@ -4,6 +4,7 @@ import validateUrl from './validate.js'
 import initView from './view.js'
 import fetchRss from './api.js'
 import parseRss from './rss.js'
+import runUpdates from './updateFeeds.js'
 import { makeId } from './utils.js'
 
 const getElements = () => ({
@@ -98,6 +99,8 @@ const init = () => {
 
   initView(state, elements, i18next)
   elements.form.addEventListener('submit', handleSubmit(elements))
+
+  runUpdates()
 }
 
 export default init
