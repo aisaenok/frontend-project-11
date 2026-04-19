@@ -1,3 +1,4 @@
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import './style.css'
 import init from './init.js'
 import initI18n from './i18n.js'
@@ -34,6 +35,24 @@ app.innerHTML = `
 
         <div class="feeds mt-5"></div>
         <div class="posts mt-5"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-description"></p>
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-primary modal-read-full" href="#" target="_blank" rel="noopener noreferrer"></a>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"></button>
+        </div>
       </div>
     </div>
   </div>

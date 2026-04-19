@@ -18,7 +18,17 @@ const getElements = () => ({
   feedback: document.querySelector('.feedback'),
   feeds: document.querySelector('.feeds'),
   posts: document.querySelector('.posts'),
+  modal: document.querySelector('#postModal'),
+  modalTitle: document.querySelector('.modal-title'),
+  modalDescription: document.querySelector('.modal-description'),
+  modalReadFull: document.querySelector('.modal-read-full'),
 })
+
+const markPostAsViewed = (postId) => {
+  if (!state.ui.viewedPostIds.includes(postId)) {
+    state.ui.viewedPostIds.push(postId)
+  }
+}
 
 const addFeedData = (url, parsed) => {
   const feedId = makeId()
@@ -94,11 +104,26 @@ const handleSubmit = elements => (event) => {
     })
 }
 
+const handlePostsClick = () => (event) => {
+  const postId = event.target.dataset.id
+
+  if (!postId) {
+    return
+  }
+
+  markPostAsViewed(postId)
+
+  if (event.target.matches('[data-role="preview"]')) {
+    state.ui.modalPostId = postId
+  }
+}
+
 const init = () => {
   const elements = getElements()
 
   initView(state, elements, i18next)
   elements.form.addEventListener('submit', handleSubmit(elements))
+  elements.posts.addEventListener('click', handlePostsClick())
 
   runUpdates()
 }

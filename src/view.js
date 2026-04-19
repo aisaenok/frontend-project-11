@@ -19,6 +19,8 @@ const renderStaticTexts = (elements, i18n) => {
   elements.input.setAttribute('aria-label', i18n.t('ui.label'))
   elements.submit.textContent = i18n.t('ui.submit')
   elements.example.textContent = i18n.t('ui.example')
+  elements.modal.querySelector('.btn-secondary').textContent = i18n.t('ui.close')
+  elements.modalReadFull.textContent = i18n.t('ui.readFull')
 }
 
 const renderForm = (state, elements, i18n) => {
@@ -72,18 +74,56 @@ const renderPosts = (state, elements, i18n) => {
     return
   }
 
-  const items = state.posts.map(post => `
-    <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
-      <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="fw-bold">
-        ${post.title}
-      </a>
-      <button type="button" class="btn btn-outline-primary btn-sm" disabled>
-        ${i18n.t('ui.preview')}
-      </button>
-    </li>
-  `).join('')
+  const viewedPosts = new Set(state.ui.viewedPostIds)
+
+  const items = state.posts.map((post) => {
+    const isViewed = viewedPosts.has(post.id)
+    const linkClass = isViewed ? 'fw-normal link-secondary' : 'fw-bold'
+
+    return `
+      <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
+        <a
+          href="${post.link}"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="${linkClass}"
+          data-id="${post.id}"
+        >
+          ${post.title}
+        </a>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm"
+          data-id="${post.id}"
+          data-role="preview"
+          data-bs-toggle="modal"
+          data-bs-target="#postModal"
+        >
+          ${i18n.t('ui.preview')}
+        </button>
+      </li>
+    `
+  }).join('')
 
   elements.posts.innerHTML = createCard(i18n.t('ui.posts'), items)
+}
+
+const renderModal = (state, elements) => {
+  const { modalPostId } = state.ui
+
+  if (!modalPostId) {
+    return
+  }
+
+  const post = state.posts.find(item => item.id === modalPostId)
+
+  if (!post) {
+    return
+  }
+
+  elements.modalTitle.textContent = post.title
+  elements.modalDescription.textContent = post.description
+  elements.modalReadFull.href = post.link
 }
 
 const render = (state, elements, i18n) => {
@@ -91,6 +131,7 @@ const render = (state, elements, i18n) => {
   renderForm(state, elements, i18n)
   renderFeeds(state, elements, i18n)
   renderPosts(state, elements, i18n)
+  renderModal(state, elements)
 }
 
 const initView = (state, elements, i18n) => {
