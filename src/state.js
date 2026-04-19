@@ -1,6 +1,6 @@
 import { proxy } from 'valtio/vanilla'
 
-const state = proxy({
+const createState = () => proxy({
   form: {
     status: 'filling',
     error: null,
@@ -13,4 +13,4 @@ const state = proxy({
   },
 })
 
-export default state
+export default createState

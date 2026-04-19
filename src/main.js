@@ -58,6 +58,16 @@ app.innerHTML = `
   </div>
 `
 
+let cleanup = null
+
 initI18n().then(() => {
-  init()
+  cleanup = init()
 })
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    if (cleanup) {
+      cleanup()
+    }
+  })
+}

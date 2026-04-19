@@ -1,48 +1,67 @@
-import state from './state.js'
-import fetchRss from './api.js'
-import parseRss from './rss.js'
-import { makeId } from './utils.js'
-
 const UPDATE_INTERVAL = 5000
 
-const getNewPosts = (feedId, parsedPosts) => {
-  const existingLinks = new Set(
-    state.posts
-      .filter(post => post.feedId === feedId)
-      .map(post => post.link),
-  )
+const createFeedUpdater = ({ state, fetchRss, parseRss, makeId }) => {
+  let timeoutId = null
+  let started = false
 
-  return parsedPosts.filter(post => !existingLinks.has(post.link))
-}
+  const getNewPosts = (feedId, parsedPosts) => {
+    const existingLinks = new Set(
+      state.posts
+        .filter(post => post.feedId === feedId)
+        .map(post => post.link),
+    )
 
-const loadFeedPosts = feed => fetchRss(feed.url)
-  .then(xml => parseRss(xml))
-  .then((parsed) => {
-    const newPosts = getNewPosts(feed.id, parsed.posts)
-      .map(post => ({
-        id: makeId(),
-        feedId: feed.id,
-        title: post.title,
-        link: post.link,
-        description: post.description,
-      }))
+    return parsedPosts.filter(post => !existingLinks.has(post.link))
+  }
 
-    if (newPosts.length > 0) {
-      state.posts.unshift(...newPosts)
-    }
-  })
+  const loadFeedPosts = feed => fetchRss(feed.url)
+    .then(xml => parseRss(xml))
+    .then((parsed) => {
+      const newPosts = getNewPosts(feed.id, parsed.posts)
+        .map(post => ({
+          id: makeId(),
+          feedId: feed.id,
+          title: post.title,
+          link: post.link,
+          description: post.description,
+        }))
 
-const updateFeeds = () => {
-  const promises = state.feeds.map(feed => loadFeedPosts(feed))
-
-  return Promise.allSettled(promises)
-}
-
-const runUpdates = () => {
-  updateFeeds()
-    .finally(() => {
-      setTimeout(runUpdates, UPDATE_INTERVAL)
+      if (newPosts.length > 0) {
+        state.posts.unshift(...newPosts)
+      }
     })
+
+  const updateFeeds = () => {
+    const promises = state.feeds.map(feed => loadFeedPosts(feed))
+    return Promise.allSettled(promises)
+  }
+
+  const scheduleNext = () => {
+    timeoutId = setTimeout(run, UPDATE_INTERVAL)
+  }
+
+  const run = () => {
+    updateFeeds().finally(scheduleNext)
+  }
+
+  return {
+    start: () => {
+      if (started) {
+        return
+      }
+
+      started = true
+      scheduleNext()
+    },
+    stop: () => {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId)
+        timeoutId = null
+      }
+
+      started = false
+    },
+  }
 }
 
-export default runUpdates
+export default createFeedUpdater
