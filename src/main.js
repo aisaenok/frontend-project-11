@@ -12,7 +12,7 @@ app.innerHTML = `
         <h1 class="page-title display-3 mb-3"></h1>
         <p class="page-subtitle lead mb-4"></p>
 
-        <form class="rss-form border rounded-3 p-4 bg-light">
+        <form class="rss-form border rounded-3 p-4 bg-light" novalidate>
           <div class="row g-2">
             <div class="col">
               <label for="url-input" class="form-label visually-hidden"></label>
@@ -39,12 +39,12 @@ app.innerHTML = `
     </div>
   </div>
 
-  <div class="modal fade" id="postModal" tabindex="-1" aria-hidden="true">
+  <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title"></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label=""></button>
         </div>
         <div class="modal-body">
           <p class="modal-description"></p>
@@ -60,8 +60,8 @@ app.innerHTML = `
 
 let cleanup = null
 
-initI18n().then(() => {
-  cleanup = init()
+initI18n().then((i18n) => {
+  cleanup = init(i18n)
 })
 
 if (import.meta.hot) {

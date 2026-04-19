@@ -1,9 +1,9 @@
 # RSS Aggregator
 
-[![Actions Status](https://github.com/<github_username>/<repo_name>/actions/workflows/nodejs.yml/badge.svg)](https://github.com/<github_username>/<repo_name>/actions/workflows/nodejs.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=<your_project_key>&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=<your_project_key>)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=<your_project_key>&metric=bugs)](https://sonarcloud.io/summary/new_code?id=<your_project_key>)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=<your_project_key>&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=<your_project_key>)
+[![Actions Status](https://github.com/aisaenok/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/aisaenok/frontend-project-11/actions)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=aisaenok_frontend-project-11&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=aisaenok_frontend-project-11)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=aisaenok_frontend-project-11&metric=bugs)](https://sonarcloud.io/summary/new_code?id=aisaenok_frontend-project-11)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=aisaenok_frontend-project-11&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=aisaenok_frontend-project-11)
 
 ## Description
 
@@ -23,7 +23,7 @@ RSS Aggregator — учебное веб-приложение для подпи�
 ```bash
 git clone https://github.com/aisaenok/frontend-project-11.git
 cd frontend-project-11
-make ci
+make install
 ```
 
 ## Development

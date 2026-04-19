@@ -1,4 +1,8 @@
-const parseError = new Error('errors.invalidRss')
+const makeRssParseError = () => {
+  const error = new Error('Invalid RSS')
+  error.code = 'invalidRss'
+  return error
+}
 
 const getTextContent = (element, selector) => {
   const node = element.querySelector(selector)
@@ -10,13 +14,13 @@ const parseRss = (xmlString) => {
   const doc = parser.parseFromString(xmlString, 'application/xml')
 
   if (doc.querySelector('parsererror')) {
-    throw parseError
+    throw makeRssParseError()
   }
 
   const channel = doc.querySelector('channel')
 
   if (!channel) {
-    throw parseError
+    throw makeRssParseError()
   }
 
   const feed = {
