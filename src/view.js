@@ -21,6 +21,7 @@ const renderStaticTexts = (elements, i18n) => {
   elements.example.textContent = i18n.t('ui.example')
   elements.modal.querySelector('.btn-secondary').textContent = i18n.t('ui.close')
   elements.modalReadFull.textContent = i18n.t('ui.readFull')
+  elements.modalCloseButton.setAttribute('aria-label', i18n.t('ui.close'))
 }
 
 const renderForm = (state, elements, i18n) => {
@@ -42,11 +43,13 @@ const renderForm = (state, elements, i18n) => {
     elements.feedback.textContent = i18n.t('ui.success')
   }
 
-  if (form.status === 'sending') {
+  if (state.form.status === 'sending') {
     elements.submit.setAttribute('disabled', 'disabled')
+    elements.input.setAttribute('disabled', 'disabled')
   }
   else {
     elements.submit.removeAttribute('disabled')
+    elements.input.removeAttribute('disabled')
   }
 }
 

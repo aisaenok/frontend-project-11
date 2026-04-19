@@ -1,4 +1,3 @@
-import i18next from 'i18next'
 import createState from './state.js'
 import validateUrl from './validate.js'
 import initView from './view.js'
@@ -22,9 +21,10 @@ const getElements = () => ({
   modalTitle: document.querySelector('.modal-title'),
   modalDescription: document.querySelector('.modal-description'),
   modalReadFull: document.querySelector('.modal-read-full'),
+  modalCloseButton: document.querySelector('.btn-close'),
 })
 
-const init = () => {
+const init = (i18n) => {
   const state = createState()
   const makeId = createIdGenerator()
   const elements = getElements()
@@ -67,7 +67,7 @@ const init = () => {
       return error.message
     }
 
-    if (error.message === 'errors.invalidRss') {
+    if (error.code === 'invalidRss') {
       return 'errors.invalidRss'
     }
 
@@ -84,7 +84,6 @@ const init = () => {
     state.form.error = null
 
     elements.form.reset()
-    elements.input.focus()
   }
 
   const handleError = (error) => {
@@ -111,6 +110,8 @@ const init = () => {
         if (state.form.status === 'sending') {
           state.form.status = 'filling'
         }
+
+        elements.input.focus()
       })
   }
 
@@ -128,7 +129,7 @@ const init = () => {
     }
   }
 
-  initView(state, elements, i18next)
+  initView(state, elements, i18n)
 
   elements.form.addEventListener('submit', handleSubmit)
   elements.posts.addEventListener('click', handlePostsClick)
